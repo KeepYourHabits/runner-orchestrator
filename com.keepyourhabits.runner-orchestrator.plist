@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.keepyourhabits.runner-orchestrator</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/adosz/runner-orchestrator/runner-orchestrator</string>
+        <string>--org</string>
+        <string>KeepYourHabits</string>
+        <string>--runner-dir</string>
+        <string>/Users/adosz/actions-runner</string>
+        <string>--max-runners</string>
+        <string>2</string>
+        <string>--min-runners</string>
+        <string>0</string>
+        <string>--scale-set-name</string>
+        <string>macos-orchestrated</string>
+    </array>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>GITHUB_TOKEN</key>
+        <string>__REPLACE_WITH_TOKEN__</string>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/adosz/flutter/bin</string>
+        <key>DEVELOPER_DIR</key>
+        <string>/Applications/Xcode-16.4.0.app/Contents/Developer</string>
+    </dict>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+    
+    <key>StandardOutPath</key>
+    <string>/var/log/runner-orchestrator.log</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/var/log/runner-orchestrator.error.log</string>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/adosz/runner-orchestrator</string>
+</dict>
+</plist>

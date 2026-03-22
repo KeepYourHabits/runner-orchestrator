@@ -1,0 +1,22 @@
+# Binaries
+runner-orchestrator
+*.exe
+
+# Dependencies
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Secrets
+.env
+*.pem
+*.key
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
