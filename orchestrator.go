@@ -222,9 +222,13 @@ func (o *Orchestrator) monitorRunner(runner *RunnerProcess) {
 }
 
 func (o *Orchestrator) buildLabels() []scaleset.Label {
+	if len(o.cfg.Labels) == 0 {
+		// Default to scale set name if no labels provided
+		return []scaleset.Label{{Name: o.cfg.ScaleSetName}}
+	}
 	labels := make([]scaleset.Label, len(o.cfg.Labels))
 	for i, l := range o.cfg.Labels {
-		labels[i] = scaleset.Label{Name: l, Type: "custom"}
+		labels[i] = scaleset.Label{Name: l}
 	}
 	return labels
 }
