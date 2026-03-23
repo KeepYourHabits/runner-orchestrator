@@ -61,20 +61,30 @@ func NewOrchestrator(cfg *Config, logger *slog.Logger) (*Orchestrator, error) {
 
 // Run starts the orchestration loop
 func (o *Orchestrator) Run(ctx context.Context) error {
-	// Create or get the runner scale set
-	scaleSet, err := o.scalesetClient.CreateRunnerScaleSet(ctx, &scaleset.RunnerScaleSet{
-		Name:          o.cfg.ScaleSetName,
-		RunnerGroupID: 1, // Default group
-		Labels:        o.buildLabels(),
-		RunnerSetting: scaleset.RunnerSetting{
-			DisableUpdate: true,
-		},
-	})
+	// Try to get existing scale set first, then create if not exists
+	scaleSet, err := o.scalesetClient.GetRunnerScaleSet(ctx, 1, o.cfg.ScaleSetName)
 	if err != nil {
-		return fmt.Errorf("failed to create scale set: %w", err)
+		return fmt.Errorf("failed to get scale set: %w", err)
+	}
+
+	if scaleSet == nil {
+		// Scale set doesn't exist, create it
+		scaleSet, err = o.scalesetClient.CreateRunnerScaleSet(ctx, &scaleset.RunnerScaleSet{
+			Name:          o.cfg.ScaleSetName,
+			RunnerGroupID: 1, // Default group
+			Labels:        o.buildLabels(),
+			RunnerSetting: scaleset.RunnerSetting{
+				DisableUpdate: true,
+			},
+		})
+		if err != nil {
+			return fmt.Errorf("failed to create scale set: %w", err)
+		}
+		o.logger.Info("Created new scale set", "id", scaleSet.ID, "name", scaleSet.Name)
+	} else {
+		o.logger.Info("Using existing scale set", "id", scaleSet.ID, "name", scaleSet.Name)
 	}
 	o.scaleSet = scaleSet
-	o.logger.Info("Scale set ready", "id", scaleSet.ID, "name", scaleSet.Name)
 
 	// Update system info with scale set ID
 	o.scalesetClient.SetSystemInfo(scaleset.SystemInfo{
